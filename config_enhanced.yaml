@@ -1,0 +1,300 @@
+# Enhanced Kafka AI Agent Configuration
+# Supports multiple MCP servers and comprehensive ecosystem management
+
+# MCP Server Configuration
+mcp_servers:
+  schema_registry:
+    enabled: true
+    command: npx
+    args: ["-y", "@aywengo/kafka-schema-reg-mcp"]
+    description: "Manages Schema Registry operations"
+  kafka_brokers:
+    enabled: true
+    command: npx
+    args: ["-y", "@aywengo/kafka-brokers-mcp"]
+    description: "Manages Kafka brokers, topics, and consumer groups"
+  # Future MCP servers can be added here
+  # ksqldb:
+  #   enabled: false
+  #   command: npx
+  #   args: ["-y", "@aywengo/ksqldb-mcp"]
+  # kafka_connect:
+  #   enabled: false
+  #   command: npx
+  #   args: ["-y", "@aywengo/kafka-connect-mcp"]
+
+# Environment Configuration
+environments:
+  dev:
+    # Schema Registry
+    registry_url: "${SCHEMA_REGISTRY_DEV_URL}"
+    registry_context: "development"
+    # Kafka Brokers
+    broker_urls:
+      - "${KAFKA_BROKER_DEV_URL}"
+    bootstrap_servers: "${KAFKA_BROKER_DEV_URL}"
+    # Settings
+    compatibility: "BACKWARD"
+    auto_register_schemas: true
+    
+  staging:
+    # Schema Registry
+    registry_url: "${SCHEMA_REGISTRY_STAGING_URL}"
+    registry_context: "staging"
+    # Kafka Brokers
+    broker_urls:
+      - "${KAFKA_BROKER_STAGING_URL_1}"
+      - "${KAFKA_BROKER_STAGING_URL_2}"
+    bootstrap_servers: "${KAFKA_BROKER_STAGING_URL_1},${KAFKA_BROKER_STAGING_URL_2}"
+    # Settings
+    compatibility: "BACKWARD"
+    auto_register_schemas: false
+    
+  production:
+    # Schema Registry
+    registry_url: "${SCHEMA_REGISTRY_PROD_URL}"
+    registry_context: "production"
+    # Kafka Brokers
+    broker_urls:
+      - "${KAFKA_BROKER_PROD_URL_1}"
+      - "${KAFKA_BROKER_PROD_URL_2}"
+      - "${KAFKA_BROKER_PROD_URL_3}"
+    bootstrap_servers: "${KAFKA_BROKER_PROD_URL_1},${KAFKA_BROKER_PROD_URL_2},${KAFKA_BROKER_PROD_URL_3}"
+    # Settings
+    compatibility: "FULL"
+    auto_register_schemas: false
+
+# LLM Provider Configuration
+llm_providers:
+  primary: "anthropic"  # anthropic, openai, google, ollama
+  fallback: "openai"
+  
+  model_settings:
+    anthropic:
+      model: "claude-3-opus-20240229"
+      max_tokens: 2000
+      temperature: 0.7
+    openai:
+      model: "gpt-4-turbo"
+      temperature: 0.7
+      max_tokens: 2000
+    google:
+      model: "gemini-pro"
+      temperature: 0.7
+    ollama:
+      model: "llama2"
+      endpoint: "http://localhost:11434"
+
+# Feature Flags
+features:
+  # Core features
+  auto_documentation: true
+  breaking_change_prevention: true
+  evolution_suggestions: true
+  natural_language_queries: true
+  
+  # Enhanced features
+  ecosystem_analysis: true
+  pipeline_validation: true
+  auto_fix_compatibility: true
+  data_catalog_generation: true
+  topic_health_monitoring: true
+  consumer_group_analysis: true
+  
+  # Monitoring
+  monitoring_enabled: true
+  monitoring_interval: 60  # seconds
+  alert_threshold_health_score: 80
+  alert_threshold_consumer_lag: 10000
+
+# Monitoring & Alerting
+monitoring:
+  enabled: true
+  
+  # Metrics collection
+  metrics:
+    prometheus_port: 9090
+    grafana_port: 3000
+    export_interval: 10  # seconds
+  
+  # Alert channels
+  alert_channels:
+    - type: slack
+      webhook_url: "${SLACK_WEBHOOK_URL}"
+      enabled: true
+    - type: email
+      smtp_server: "${SMTP_SERVER}"
+      smtp_port: 587
+      from_address: "kafka-ai-agent@company.com"
+      to_addresses:
+        - "kafka-team@company.com"
+      enabled: false
+    - type: pagerduty
+      integration_key: "${PAGERDUTY_KEY}"
+      enabled: false
+  
+  # Alert thresholds
+  thresholds:
+    ecosystem_health_score: 80
+    schema_changes_per_hour: 10
+    failed_registrations: 3
+    topic_partition_skew: 20  # percentage
+    consumer_lag_critical: 10000
+    broker_disk_usage: 85  # percentage
+
+# Analysis Settings
+analysis:
+  # Ecosystem analysis
+  ecosystem:
+    include_orphaned_schemas: true
+    include_unused_topics: true
+    include_consumer_lag: true
+    include_broker_metrics: true
+  
+  # Pipeline analysis
+  pipeline:
+    max_depth: 10  # Maximum topics in a pipeline
+    compatibility_check: true
+    performance_analysis: true
+    bottleneck_detection: true
+  
+  # Schema evolution
+  evolution:
+    auto_generate_migration_plan: true
+    risk_assessment: true
+    consumer_impact_analysis: true
+    rollback_strategy: true
+
+# Data Catalog Settings
+data_catalog:
+  auto_generate: true
+  include_business_context: true
+  include_data_lineage: true
+  include_usage_statistics: true
+  output_formats:
+    - json
+    - markdown
+    - html
+  update_frequency: "daily"  # hourly, daily, weekly
+
+# Security Settings
+security:
+  authentication:
+    enabled: true
+    type: "jwt"  # jwt, oauth2, api_key
+    jwt_secret: "${JWT_SECRET_KEY}"
+  
+  authorization:
+    enabled: true
+    rbac:
+      - role: admin
+        permissions: ["*"]
+      - role: developer
+        permissions: ["read", "write:dev", "write:staging"]
+      - role: viewer
+        permissions: ["read"]
+  
+  encryption:
+    schemas_at_rest: false
+    transport_tls: true
+
+# Logging Configuration
+logging:
+  level: "INFO"  # DEBUG, INFO, WARNING, ERROR
+  format: "json"  # json, text
+  file: "logs/kafka-ai-agent.log"
+  max_size: "100MB"
+  max_files: 10
+  
+  # Structured logging fields
+  include_fields:
+    - timestamp
+    - level
+    - message
+    - environment
+    - operation
+    - user
+    - duration
+
+# Performance Tuning
+performance:
+  # Connection pooling
+  connection_pool:
+    max_connections: 100
+    min_connections: 10
+    connection_timeout: 30  # seconds
+  
+  # Caching
+  cache:
+    enabled: true
+    ttl: 300  # seconds
+    max_size: 1000  # entries
+  
+  # Batch processing
+  batch:
+    enabled: true
+    size: 100
+    timeout: 5000  # milliseconds
+  
+  # Rate limiting
+  rate_limiting:
+    enabled: true
+    requests_per_minute: 1000
+    burst_size: 100
+
+# API Configuration
+api:
+  host: "0.0.0.0"
+  port: 8000
+  base_path: "/api/v2"
+  
+  # CORS settings
+  cors:
+    enabled: true
+    allow_origins: ["*"]
+    allow_methods: ["GET", "POST", "PUT", "DELETE"]
+    allow_headers: ["*"]
+  
+  # WebSocket settings
+  websocket:
+    enabled: true
+    ping_interval: 30  # seconds
+    max_connections: 1000
+  
+  # Documentation
+  docs:
+    enabled: true
+    swagger_ui: true
+    redoc: true
+
+# CLI Configuration
+cli:
+  # Output formatting
+  output:
+    format: "rich"  # rich, json, plain
+    colors: true
+    verbose: false
+  
+  # Interactive mode
+  interactive:
+    enabled: true
+    history_file: "~/.kafka-ai-agent-history"
+    auto_complete: true
+
+# Disaster Recovery
+disaster_recovery:
+  backup:
+    enabled: true
+    schedule: "0 2 * * *"  # Cron expression (2 AM daily)
+    retention_days: 30
+    destinations:
+      - type: "s3"
+        bucket: "kafka-ai-agent-backups"
+        region: "us-east-1"
+      - type: "local"
+        path: "/backups/kafka-ai-agent"
+  
+  restore:
+    validation: true
+    dry_run: true
+    parallel_restore: true

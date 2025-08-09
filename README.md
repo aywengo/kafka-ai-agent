@@ -1,44 +1,79 @@
-# Kafka AI Agent - Enhanced Edition
+# Kafka AI Agent - Enhanced Edition with Configurable Prompts
 
-🚀 **Now with Multi-MCP Support!** Intelligent Kafka ecosystem management powered by AI, integrating both **Schema Registry** and **Kafka Brokers** MCP servers for comprehensive control.
+🚀 **Now with Multi-MCP Support & Configurable System Prompts!** 
 
-## 🎯 New Enhanced Features
+Intelligent Kafka ecosystem management powered by AI, integrating both **Schema Registry** and **Kafka Brokers** MCP servers with fully customizable AI behavior through configuration files.
+
+## 🎯 Key Features
+
+### **NEW: Configurable System Prompts** ✨
+- **YAML-based Configuration**: Customize AI behavior without code changes
+- **Environment-Specific Prompts**: Different AI personalities for dev/staging/prod
+- **Organization Customization**: Adapt to your company's terminology and policies
+- **Dynamic Reloading**: Update prompts at runtime
+- **Prompt Templates**: Reusable templates for common operations
+- **Risk Tolerance Settings**: Configurable safety levels per environment
 
 ### Multi-MCP Integration
 - **Dual MCP Servers**: Seamlessly integrates [Kafka Schema Registry MCP](https://github.com/aywengo/kafka-schema-reg-mcp) and [Kafka Brokers MCP](https://github.com/aywengo/kafka-brokers-mcp)
 - **Unified Management**: Single interface for schemas, topics, brokers, and consumer groups
-- **Cross-Domain Analysis**: Correlate schemas with topics, analyze data pipelines, and validate message compliance
+- **Cross-Domain Analysis**: Correlate schemas with topics, analyze data pipelines
 
-### Comprehensive Ecosystem Management
-- 🔍 **Ecosystem Health Analysis** - Complete health scoring across schemas, topics, and consumer groups
-- 🔄 **Data Pipeline Analysis** - Track data flow across multiple topics with compatibility checking
-- 📊 **Topic-Schema Alignment** - Ensure every topic has proper schema coverage
-- 🎯 **Consumer Group Intelligence** - Analyze consumer patterns with schema awareness
-- 📈 **Performance Optimization** - AI-driven bottleneck detection and recommendations
-
-## Features
-
-### Core Capabilities (Original)
-- 🔍 **Schema Evolution Monitoring** - Track changes and suggest improvements
-- 🛡️ **Breaking Change Prevention** - Detect compatibility issues before production
-- 📚 **Auto-Documentation** - Generate comprehensive docs using AI
-- 💬 **Natural Language Queries** - Query your Kafka ecosystem in plain English
+### Core Capabilities
+- 🔍 **Schema Evolution Monitoring** - Track changes with customizable analysis criteria
+- 🛡️ **Breaking Change Prevention** - Configurable compatibility checking
+- 📚 **Auto-Documentation** - Generate docs with organization-specific templates
+- 💬 **Natural Language Queries** - Customizable intent recognition and responses
 - 🤖 **Multi-LLM Support** - Anthropic, OpenAI, Google, or self-hosted models
 
-### Enhanced Capabilities (New)
-- 🌐 **Complete Topology Mapping** - Visualize entire Kafka ecosystem
-- 🔗 **Data Lineage Tracking** - Understand data flow from source to sink
-- ⚡ **Real-time Health Monitoring** - WebSocket-based live updates
-- 🔧 **Auto-fix Compatibility** - AI-powered schema compatibility resolution
-- 📖 **Data Catalog Generation** - Comprehensive documentation with business context
+## 📝 Configurable Prompts System
 
-## Quick Start
+### Quick Example
 
-### Prerequisites
-- Python 3.9+
-- Node.js 16+
-- Access to Kafka infrastructure
-- LLM API keys (Anthropic/OpenAI/Google)
+Configure AI behavior in `prompts.yaml`:
+
+```yaml
+# Customize the AI's role and expertise
+global:
+  role: |
+    You are an expert Kafka architect for ACME Corp specializing in:
+    - E-commerce event streaming
+    - Real-time fraud detection
+    - PCI and GDPR compliance
+
+# Environment-specific behavior
+environments:
+  production:
+    tone_adjustment: |
+      Be extremely cautious. Always provide rollback procedures.
+    risk_tolerance: "low"
+  
+  development:
+    tone_adjustment: |
+      Be educational and detailed. Explain the reasoning.
+    risk_tolerance: "high"
+
+# Operation-specific prompts
+operations:
+  schema_analysis:
+    evaluation_criteria: |
+      Evaluate based on:
+      1. PCI compliance for payment fields
+      2. GDPR requirements for PII
+      3. Company naming standards (ACME-SCHEMA-XXX)
+      4. Performance SLA requirements
+```
+
+### Prompt Customization Features
+
+- **Global Settings**: Define AI role, tone, and constraints
+- **Operation Prompts**: Customize prompts for each operation type
+- **Environment Overrides**: Different behavior for dev/staging/prod
+- **Custom Templates**: Create reusable prompt templates
+- **Dynamic Variables**: Template substitution with context variables
+- **Chain-of-Thought**: Configurable reasoning strategies
+
+## 🚀 Quick Start
 
 ### Installation
 
@@ -47,7 +82,7 @@
 git clone https://github.com/aywengo/kafka-ai-agent.git
 cd kafka-ai-agent
 
-# Install Python dependencies
+# Install dependencies
 pip install -r requirements.txt
 
 # Install BOTH MCP servers
@@ -59,251 +94,313 @@ cp .env.example .env
 # Edit .env with your settings
 ```
 
-### Enhanced CLI Usage
+### Run the Prompt Customization Demo
 
 ```bash
-# Analyze entire ecosystem
+# See how configurable prompts work
+python examples/prompt_customization_demo.py
+```
+
+This interactive demo shows:
+- Environment-specific prompt behavior
+- Organization customization
+- Dynamic prompt building
+- Interactive configuration
+- Prompt testing and validation
+
+### Use Configurable Agent
+
+```python
+from kafka_ai_agent_configurable import ConfigurableKafkaAIAgent
+
+# Initialize with custom prompts
+agent = ConfigurableKafkaAIAgent(
+    config_path="config.yaml",
+    prompts_path="prompts.yaml"  # Your custom prompts
+)
+await agent.initialize()
+
+# Customize for your organization
+org_config = {
+    "global": {
+        "role": "You are a Kafka expert for FinTech Corp..."
+    },
+    "operations": {
+        "schema_analysis": {
+            "evaluation_criteria": "Focus on financial compliance..."
+        }
+    }
+}
+await agent.customize_prompts(org_config)
+
+# Use with customized behavior
+result = await agent.analyze_schema_with_prompts(
+    "payment-events",
+    "production"
+)
+```
+
+### Enhanced CLI with Configurable Prompts
+
+```bash
+# Analyze with environment-specific prompts
 python cli_enhanced.py ecosystem --environment prod
 
-# Analyze data pipeline
-python cli_enhanced.py pipeline \
-  --name "user-journey" \
-  --topics "user-events,user-profiles,user-analytics"
-
-# Manage schema evolution with auto-fix
-python cli_enhanced.py evolve \
-  --subject user-events \
-  --changes-file changes.json \
-  --auto-fix
-
-# Check topic health
-python cli_enhanced.py health --topic user-events
-
-# Generate data catalog
-python cli_enhanced.py catalog \
-  --environment prod \
-  --output catalog.md \
-  --format markdown
-
-# Start comprehensive monitoring
-python cli_enhanced.py monitor --interval 30
+# The AI will automatically adjust its behavior based on:
+# - Environment (cautious in prod, educational in dev)
+# - Risk tolerance settings
+# - Organization-specific requirements
 ```
 
-### Enhanced API Usage
-
-Start the enhanced API server:
-```bash
-uvicorn api_enhanced:app --reload --port 8000
-```
-
-#### New API Endpoints
+### REST API with Configurable Prompts
 
 ```bash
-# Comprehensive ecosystem analysis
-curl -X POST http://localhost:8000/api/v2/ecosystem/analysis \
-  -H "Authorization: Bearer YOUR_TOKEN" \
-  -H "Content-Type: application/json" \
-  -d '{"environment": "prod"}'
+# Start API server
+uvicorn api_enhanced:app --reload
 
-# Analyze data pipeline
-curl -X POST http://localhost:8000/api/v2/pipeline/analysis \
-  -H "Authorization: Bearer YOUR_TOKEN" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "pipeline_name": "user-journey",
-    "topic_chain": ["user-events", "user-profiles", "user-analytics"],
-    "environment": "prod"
-  }'
-
-# Topic health check with schema validation
-curl -X POST http://localhost:8000/api/v2/topic/health-check \
-  -H "Authorization: Bearer YOUR_TOKEN" \
-  -H "Content-Type: application/json" \
-  -d '{"topic": "user-events", "validate_messages": true}'
-
-# Generate data catalog
-curl -X POST http://localhost:8000/api/v2/catalog/generate \
-  -H "Authorization: Bearer YOUR_TOKEN" \
-  -H "Content-Type: application/json" \
-  -d '{"environment": "prod", "include_documentation": true}'
+# The API automatically uses configured prompts for all operations
 ```
 
-### WebSocket Monitoring
+## 📋 Prompt Configuration Guide
 
-```javascript
-const ws = new WebSocket('ws://localhost:8000/ws/monitoring');
-
-ws.onmessage = (event) => {
-  const data = JSON.parse(event.data);
-  console.log('Ecosystem Update:', data);
-  // data.health_score, data.issues, etc.
-};
-```
-
-## Architecture
-
-```
-┌─────────────────────────────────────────────────────────────┐
-│                     Enhanced AI Agent                         │
-├───────────────────────────────────────────────────────────────┤
-│  • Natural Language Processing                               │
-│  • Cross-MCP Orchestration                                   │
-│  • Intelligent Analysis & Recommendations                    │
-└─────────────────────────────────────────────────────────────┘
-                               │
-                ┌──────────────┴──────────────┐
-                ▼                             ▼
-┌─────────────────────────┐   ┌─────────────────────────┐
-│   Schema Registry MCP    │   │    Kafka Brokers MCP     │
-├─────────────────────────┤   ├─────────────────────────┤
-│ • Schema CRUD           │   │ • Topic Management      │
-│ • Compatibility Check   │   │ • Consumer Groups       │
-│ • Evolution Workflows   │   │ • Broker Operations     │
-│ • Migration Tools       │   │ • Performance Metrics   │
-└─────────────────────────┘   └─────────────────────────┘
-                │                             │
-                └──────────────┬──────────────┘
-                               ▼
-┌─────────────────────────────────────────────────────────────┐
-│                    Kafka Infrastructure                       │
-├────────────────┬──────────────────┬──────────────────────────┤
-│    Brokers     │  Schema Registry  │    Consumer Groups       │
-└────────────────┴──────────────────┴──────────────────────────┘
-```
-
-## Docker Deployment
+### Structure of prompts.yaml
 
 ```yaml
-# docker-compose.yml includes all services
-docker-compose up -d
+# Global AI configuration
+global:
+  role: "AI expertise and background"
+  tone: "Communication style"
+  constraints: "Safety and compliance rules"
 
-# Access services
-# API: http://localhost:8000
-# Prometheus: http://localhost:9091
-# Grafana: http://localhost:3000
-```
+# Operation-specific prompts
+operations:
+  schema_analysis:
+    base: "Main prompt for analysis"
+    evaluation_criteria: "What to evaluate"
+    output_format: "How to structure response"
+    context_variables: ["list", "of", "variables"]
+  
+  schema_evolution:
+    compatibility_analysis: "How to check compatibility"
+    migration_planning: "How to create migration plans"
+    risk_assessment: "How to assess risks"
 
-## Configuration
-
-Update `config.yaml` for multi-MCP setup:
-
-```yaml
-mcp_servers:
-  schema_registry:
-    enabled: true
-    command: npx
-    args: ["-y", "@aywengo/kafka-schema-reg-mcp"]
-  kafka_brokers:
-    enabled: true
-    command: npx
-    args: ["-y", "@aywengo/kafka-brokers-mcp"]
-
+# Environment configurations
 environments:
-  dev:
-    registry_url: "http://localhost:8081"
-    broker_urls: ["localhost:9092"]
-  prod:
-    registry_url: "http://prod-registry:8081"
-    broker_urls: ["prod-broker1:9092", "prod-broker2:9092"]
+  production:
+    tone_adjustment: "Production-specific tone"
+    risk_tolerance: "low"
+    additional_context: "Production considerations"
+  
+  development:
+    tone_adjustment: "Dev-specific tone"
+    risk_tolerance: "high"
+    additional_context: "Development considerations"
+
+# Custom templates
+templates:
+  error_analysis: |
+    Analyze error: ${error_message}
+    Context: ${error_context}
+  
+  capacity_planning: |
+    Current: ${current_throughput}
+    Growth: ${growth_rate}
+
+# Settings
+settings:
+  max_tokens: 2000
+  temperature: 0.7
+  use_chain_of_thought: true
+  require_confirmation_for:
+    - production_changes
+    - delete_operations
 ```
 
-## Use Cases
+### Available Operations for Customization
 
-### 1. Complete Ecosystem Health Check
-```python
-# Analyze entire Kafka ecosystem
-analysis = await agent.comprehensive_ecosystem_analysis("prod")
-print(f"Health Score: {analysis.health_score}%")
-print(f"Risks: {analysis.risk_assessment}")
+1. **schema_analysis** - Schema evaluation and recommendations
+2. **schema_evolution** - Evolution planning and migration
+3. **breaking_changes** - Detection and fixes
+4. **documentation** - Auto-documentation generation
+5. **ecosystem_analysis** - Complete health assessment
+6. **pipeline_analysis** - Data flow validation
+7. **nlp_query** - Natural language processing
+8. **compatibility_fix** - Auto-fix strategies
+9. **consumer_impact** - Impact assessment
+
+### Dynamic Variables
+
+Use template variables in prompts:
+
+```yaml
+operations:
+  schema_analysis:
+    base: |
+      Analyze schema: ${schema_name}
+      Version: ${version}
+      Environment: ${environment}
+      Consumers: ${downstream_consumers}
 ```
 
-### 2. Data Pipeline Validation
+### Organization-Specific Customization
+
 ```python
-# Validate data pipeline compatibility
-pipeline = await agent.analyze_data_pipeline(
-    "user-journey",
-    ["user-events", "user-enriched", "user-analytics"],
-    "prod"
+# Programmatically customize for your organization
+ui = PromptConfigurationUI(agent)
+
+# Update AI role
+await ui.update_global_role(
+    "You are a Kafka expert for Healthcare Corp, "
+    "specializing in HIPAA compliance and patient data..."
+)
+
+# Set production tone
+await ui.set_environment_tone(
+    "production",
+    "Be extremely cautious with patient data. "
+    "Always consider HIPAA requirements."
+)
+
+# Add custom template
+await ui.add_custom_template(
+    "hipaa_check",
+    "Verify HIPAA compliance for: ${data_fields}"
 )
 ```
 
-### 3. Intelligent Schema Evolution
+## 🎨 Use Cases for Prompt Configuration
+
+### 1. Compliance-Focused Organization
+```yaml
+global:
+  constraints: |
+    - Always check GDPR compliance for EU data
+    - Verify PCI DSS for payment fields
+    - Ensure SOC2 audit requirements
+```
+
+### 2. High-Performance Trading Platform
+```yaml
+operations:
+  schema_analysis:
+    evaluation_criteria: |
+      - Latency impact (target: <1ms)
+      - Message size optimization
+      - Compression efficiency
+      - Serialization performance
+```
+
+### 3. Multi-Team Enterprise
+```yaml
+environments:
+  team_analytics:
+    tone_adjustment: "Focus on data science requirements"
+  team_platform:
+    tone_adjustment: "Focus on infrastructure and reliability"
+  team_product:
+    tone_adjustment: "Focus on feature delivery speed"
+```
+
+## 📊 Complete Feature Set
+
+### Ecosystem Management
+- **Comprehensive Analysis**: Full ecosystem health with custom scoring
+- **Pipeline Validation**: End-to-end data flow verification
+- **Topic-Schema Alignment**: Automated correlation and validation
+- **Consumer Intelligence**: Impact analysis with custom criteria
+
+### Schema Operations
+- **Evolution Planning**: Customizable migration strategies
+- **Compatibility Checking**: Configurable rule sets
+- **Auto-Documentation**: Template-based generation
+- **Breaking Change Detection**: Custom detection rules
+
+### Monitoring & Alerting
+- **Real-time Monitoring**: WebSocket updates with custom alerts
+- **Health Scoring**: Configurable scoring algorithms
+- **Risk Assessment**: Environment-specific thresholds
+- **Alert Routing**: Custom notification channels
+
+## 🔧 Advanced Configuration
+
+### Prompt Testing
 ```python
-# Evolve schema with impact analysis
-evolution = await agent.intelligent_schema_evolution(
-    "user-events",
-    {"add_fields": [{"name": "session_id", "type": "string"}]},
-    "prod"
+# Test prompts before deployment
+ui = PromptConfigurationUI(agent)
+
+prompt = await ui.test_prompt(
+    PromptOperation.SCHEMA_EVOLUTION,
+    "Test input for evolution",
+    environment="production"
 )
+print(f"Generated prompt: {prompt}")
 ```
 
-### 4. Topic-Schema Health Monitoring
+### Dynamic Reload
 ```python
-# Check topic health with schema validation
-health = await agent.topic_schema_health_check("user-events", "prod")
+# Reload prompts without restart
+await agent.reload_prompts()
 ```
 
-## Monitoring & Observability
+### Prompt Builder
+```python
+from prompt_manager import PromptBuilder
 
-- **Prometheus Metrics**: Comprehensive metrics for both schemas and brokers
-- **Grafana Dashboards**: Pre-built dashboards for ecosystem visualization
-- **Real-time Alerts**: Configurable alerts for health degradation
-- **WebSocket Streaming**: Live updates for monitoring dashboards
-
-## API Documentation
-
-- **Swagger UI**: http://localhost:8000/docs
-- **ReDoc**: http://localhost:8000/redoc
-- **WebSocket**: ws://localhost:8000/ws/monitoring
-
-## Testing
-
-```bash
-# Run all tests
-pytest tests/
-
-# Test MCP connections
-pytest tests/test_mcp_manager.py
-
-# Test enhanced features
-pytest tests/test_enhanced_agent.py
-
-# Integration tests
-pytest tests/integration/
+builder = PromptBuilder(agent.prompt_manager)
+prompt = (builder
+    .with_operation(PromptOperation.SCHEMA_EVOLUTION)
+    .with_environment("production")
+    .with_variables(
+        subject="critical-events",
+        consumer_count=50,
+        business_criticality="CRITICAL"
+    )
+    .add_section("Special considerations...")
+    .build("Evaluate schema change"))
 ```
 
-## Contributing
+## 📚 Documentation
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
+- [Prompt Configuration Guide](docs/PROMPTS.md)
+- [API Reference](docs/API.md)
+- [Setup Guide](docs/SETUP.md)
+- [Examples](examples/)
 
-## Roadmap
+## 🎯 Benefits of Configurable Prompts
 
-- [ ] Support for additional MCP servers (ksqlDB, Kafka Connect)
-- [ ] Schema registry federation support
-- [ ] Advanced data lineage visualization
-- [ ] ML-based anomaly detection
-- [ ] Cost optimization recommendations
-- [ ] Automated disaster recovery
-- [ ] Schema versioning strategies
-- [ ] Compliance and governance features
+1. **No Code Changes**: Modify AI behavior through configuration
+2. **Environment Awareness**: Different behavior for dev/staging/prod
+3. **Organization Alignment**: Match your company's terminology and policies
+4. **Compliance Ready**: Built-in support for regulatory requirements
+5. **Team Customization**: Different prompts for different teams
+6. **Rapid Iteration**: Test and refine prompts without deployment
+7. **Consistency**: Standardized AI responses across the organization
 
-## License
+## 🚀 Getting Started
 
-MIT License - see [LICENSE](LICENSE) file
+1. **Run the Demo**: `python examples/prompt_customization_demo.py`
+2. **Customize prompts.yaml**: Add your organization's requirements
+3. **Test Your Prompts**: Use the testing utilities
+4. **Deploy**: Start using customized AI behavior
 
-## Acknowledgments
+## 🤝 Contributing
 
-- Built on [Kafka Schema Registry MCP Server](https://github.com/aywengo/kafka-schema-reg-mcp)
-- Powered by [Kafka Brokers MCP Server](https://github.com/aywengo/kafka-brokers-mcp)
-- AI capabilities by Anthropic/OpenAI/Google
+Contributions welcome! See [CONTRIBUTING.md](CONTRIBUTING.md).
+
+## 📝 License
+
+MIT License - see [LICENSE](LICENSE) file.
+
+## 🙏 Acknowledgments
+
+- [Kafka Schema Registry MCP Server](https://github.com/aywengo/kafka-schema-reg-mcp)
+- [Kafka Brokers MCP Server](https://github.com/aywengo/kafka-brokers-mcp)
 - Model Context Protocol (MCP) by Anthropic
-
-## Support
-
-- **Issues**: [GitHub Issues](https://github.com/aywengo/kafka-ai-agent/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/aywengo/kafka-ai-agent/discussions)
-- **Documentation**: [Full Docs](docs/)
+- LLM providers: Anthropic, OpenAI, Google
 
 ---
 
 **⭐ Star this repo if you find it helpful!**
+
+**🔥 The most flexible and customizable Kafka AI Agent available!**
